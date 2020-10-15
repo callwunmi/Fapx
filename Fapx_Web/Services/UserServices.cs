@@ -23,7 +23,7 @@ namespace Fapx_Web.Services
                     int dt = 0;
                     int.TryParse(days, out dt);
 
-                    string sql = $@"select top 100  id from users where LastLoginDate < DATEADD(day, -{dt}, GETDATE())
+                    string sql = $@"select top 100  id from users where status = 0 and LastLoginDate < DATEADD(day, -{dt}, GETDATE())
                         order by LastLoginDate";
 
                     var ids = await con.QueryAsync<long>(sql);
