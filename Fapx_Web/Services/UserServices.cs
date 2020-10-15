@@ -23,7 +23,7 @@ namespace Fapx_Web.Services
                     int dt = 0;
                     int.TryParse(days, out dt);
 
-                    string sql = $@"select top 100  id from users where status = 0 and LastLoginDate < DATEADD(day, -{dt}, GETDATE())
+                    string sql = $@"select top 100  id from users where (status is null and status = 0) and LastLoginDate < DATEADD(day, -{dt}, GETDATE())
                         order by LastLoginDate";
 
                     var ids = await con.QueryAsync<long>(sql);
@@ -31,7 +31,7 @@ namespace Fapx_Web.Services
                         return;
 
                     foreach (var n in ids)
-                        await con.ExecuteAsync($"update users set status = 1 where id = {n}");
+                        await con.ExecuteAsync($"update users set status = 2 where id = {n}");
                 }
             }
             catch (Exception ex)
