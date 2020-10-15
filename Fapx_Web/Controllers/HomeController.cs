@@ -1,10 +1,6 @@
 ﻿using Fapx_Web.Services;
 using Hangfire;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Web;
+using System.Configuration;
 using System.Web.Mvc;
 
 namespace Fapx_Web.Controllers
@@ -14,7 +10,13 @@ namespace Fapx_Web.Controllers
         public ActionResult Index()
         {
             var userServ = new UserServices();
-            RecurringJob.AddOrUpdate(() => userServ.UpdateDomantUserStatus(), Cron.Hourly());
+            var hrInt = ConfigurationManager.AppSettings["dormantPeriod"];
+            int hrInterval = 0;
+            int.TryParse(hrInt, out hrInterval);
+            if (hrInterval == 0)
+                hrInterval = 1;
+
+            RecurringJob.AddOrUpdate(() => userServ.UpdateDomantUserStatus(), Cron.HourInterval(hrInterval));
             return View();
         }
 

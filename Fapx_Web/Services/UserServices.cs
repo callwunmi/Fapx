@@ -23,7 +23,13 @@ namespace Fapx_Web.Services
                     int dt = 0;
                     int.TryParse(days, out dt);
 
-                    string sql = $@"select top 100  id from users where (status is null and status = 0) and LastLoginDate < DATEADD(day, -{dt}, GETDATE())
+                    var ct = ConfigurationManager.AppSettings["UserCount"];
+                    int totalCt = 0;
+                    int.TryParse(ct, out totalCt);
+                    if (totalCt == 0)
+                        totalCt = 100;
+
+                    string sql = $@"select top {totalCt} id from users where (status is null and status = 0) and LastLoginDate < DATEADD(day, -{dt}, GETDATE())
                         order by LastLoginDate";
 
                     var ids = await con.QueryAsync<long>(sql);
